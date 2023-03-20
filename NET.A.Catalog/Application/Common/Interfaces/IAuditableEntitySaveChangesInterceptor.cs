@@ -1,15 +1,9 @@
 ﻿using Domain.Common;
-using Domain.Entities;
-using LiteDB;
 
 namespace Application.Common.Interfaces
 {
-    public interface IApplicationDbContext
+    public interface IAuditableEntitySaveChangesInterceptor
     {
-        ILiteCollection<Category> Categories { get; }
-
-        ILiteCollection<Item> Items { get; }
-
         void InitialDate(BaseAuditableEntity entry);
 
         void UpdateDate(BaseAuditableEntity entry);

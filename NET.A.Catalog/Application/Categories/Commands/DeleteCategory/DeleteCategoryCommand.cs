@@ -1,7 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
-using Domain.Events;
 using MediatR;
 
 namespace Application.Categories.Commands.DeleteCategory
@@ -19,19 +18,14 @@ namespace Application.Categories.Commands.DeleteCategory
 
         public async Task<Unit> Handle(DeleteCategoryCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Categories
-                .FindAsync(new object[] { request.Id }, cancellationToken);
+            var entity = _context.Categories.FindOne(x => x.Id == request.Id);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(Category), request.Id);
             }
 
-            _context.Categories.Remove(entity);
-
-            entity.AddDomainEvent(new CategoryDeletedEvent(entity));
-
-            await _context.SaveChangesAsync(cancellationToken);
+            _context.Categories.Delete(entity.Id);
 
             return Unit.Value;
         }

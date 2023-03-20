@@ -19,7 +19,7 @@ namespace Application.Categories.Queries
 
         public async Task<CategoryDto> Handle(GetCategoryQuery request, CancellationToken cancellationToken)
         {
-            var category = _context.Categories.FirstOrDefault(c => c.Id == request.Id);
+            var category = _context.Categories.FindOne(c => c.Id == request.Id);
             if (category == null)
             {
                 return null;

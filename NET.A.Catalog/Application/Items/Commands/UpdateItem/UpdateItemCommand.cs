@@ -23,8 +23,7 @@ namespace Application.Items.Commands.UpdateItem
 
         public async Task<Unit> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Items
-                .FindAsync(new object[] { request.Id }, cancellationToken);
+            var entity = _context.Items.FindOne(x => x.Id == request.Id);
 
             if (entity == null)
             {
@@ -32,8 +31,8 @@ namespace Application.Items.Commands.UpdateItem
             }
 
             entity.Name = request.Name;
-
-            await _context.SaveChangesAsync(cancellationToken);
+            _context.UpdateDate(entity);
+            _context.Items.Update(entity);
 
             return Unit.Value;
         }

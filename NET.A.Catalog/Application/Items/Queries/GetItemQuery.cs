@@ -19,7 +19,7 @@ namespace Application.Items.Queries
 
         public async Task<ItemDto> Handle(GetItemQuery request, CancellationToken cancellationToken)
         {
-            var category = _context.Items.FirstOrDefault(c => c.Id == request.Id);
+            var category = _context.Items.FindOne(c => c.Id == request.Id);
             if (category == null)
             {
                 return null;

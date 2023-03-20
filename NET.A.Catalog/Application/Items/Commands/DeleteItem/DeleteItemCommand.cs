@@ -1,7 +1,6 @@
 ﻿using Application.Common.Exceptions;
 using Application.Common.Interfaces;
 using Domain.Entities;
-using Domain.Events;
 using MediatR;
 
 namespace Application.Items.Commands.DeleteItem
@@ -19,19 +18,14 @@ namespace Application.Items.Commands.DeleteItem
 
         public async Task<Unit> Handle(DeleteItemCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Items
-                .FindAsync(new object[] { request.Id }, cancellationToken);
+            var entity = _context.Items.FindOne(x => x.Id == request.Id);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(Item), request.Id);
             }
 
-            _context.Items.Remove(entity);
-
-            entity.AddDomainEvent(new ItemDeletedEvent(entity));
-
-            await _context.SaveChangesAsync(cancellationToken);
+            _context.Items.Delete(entity.Id);
 
             return Unit.Value;
         }

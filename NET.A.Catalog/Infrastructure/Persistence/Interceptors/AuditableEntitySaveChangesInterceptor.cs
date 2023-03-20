@@ -1,11 +1,8 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace Infrastructure.Persistence.Interceptors;
-public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
+public class AuditableEntitySaveChangesInterceptor : IAuditableEntitySaveChangesInterceptor
 {
     private readonly IDateTime _dateTime;
 
@@ -14,44 +11,13 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
         _dateTime = dateTime;
     }
 
-    public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
+    public void InitialDate(BaseAuditableEntity entry)
     {
-        UpdateEntities(eventData.Context);
-
-        return base.SavingChanges(eventData, result);
+        entry.Created = _dateTime.Now;
     }
 
-    public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+    public void UpdateDate(BaseAuditableEntity entry)
     {
-        UpdateEntities(eventData.Context);
-
-        return base.SavingChangesAsync(eventData, result, cancellationToken);
+        entry.LastModified = _dateTime.Now;
     }
-
-    public void UpdateEntities(DbContext? context)
-    {
-        if (context == null) return;
-
-        foreach (var entry in context.ChangeTracker.Entries<BaseAuditableEntity>())
-        {
-            if (entry.State == EntityState.Added)
-            {
-                entry.Entity.Created = _dateTime.Now;
-            }
-
-            if (entry.State == EntityState.Added || entry.State == EntityState.Modified || entry.HasChangedOwnedEntities())
-            {
-                entry.Entity.LastModified = _dateTime.Now;
-            }
-        }
-    }
-}
-
-public static class Extensions
-{
-    public static bool HasChangedOwnedEntities(this EntityEntry entry) =>
-        entry.References.Any(r =>
-            r.TargetEntry != null &&
-            r.TargetEntry.Metadata.IsOwned() &&
-            (r.TargetEntry.State == EntityState.Added || r.TargetEntry.State == EntityState.Modified));
 }

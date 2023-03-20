@@ -1,8 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Items.Queries
 {
@@ -19,9 +17,10 @@ namespace Application.Items.Queries
             _mapper = mapper;
         }
 
-        public async Task<List<ItemDto>> Handle(GetItemsQuery request, CancellationToken cancellationToken)
+        public Task<List<ItemDto>> Handle(GetItemsQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Items.ProjectTo<ItemDto>(_mapper.ConfigurationProvider).ToListAsync();
+            var items = _context.Items.Query().ToList();
+            return Task.Run(() => _mapper.Map<List<ItemDto>>(items));
         }
     }
 }

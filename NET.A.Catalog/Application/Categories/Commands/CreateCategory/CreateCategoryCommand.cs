@@ -1,6 +1,5 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Entities;
-using Domain.Events;
 using MediatR;
 
 namespace Application.Categories.Commands.CreateCategory
@@ -32,11 +31,8 @@ namespace Application.Categories.Commands.CreateCategory
                 ParentCategoryId = request.ParentCategoryId
             };
 
-            entity.AddDomainEvent(new CategoryCreateEvent(entity));
-
-            _context.Categories.Add(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
+            _context.InitialDate(entity);
+            _context.Categories.Insert(entity);
 
             return entity.Id;
         }

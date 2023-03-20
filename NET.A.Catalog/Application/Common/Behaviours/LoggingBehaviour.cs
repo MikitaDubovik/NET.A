@@ -6,7 +6,7 @@ public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where T
 {
     private readonly ILogger _logger;
 
-    public LoggingBehaviour(ILogger<TRequest> logger)
+    public LoggingBehaviour(ILogger<LoggingBehaviour<TRequest>> logger)
     {
         _logger = logger;
     }

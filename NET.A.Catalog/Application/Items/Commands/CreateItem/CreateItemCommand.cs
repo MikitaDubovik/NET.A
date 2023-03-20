@@ -1,6 +1,5 @@
 ﻿using Application.Common.Interfaces;
 using Domain.Entities;
-using Domain.Events;
 using MediatR;
 
 namespace Application.Items.Commands.CreateItem
@@ -26,21 +25,19 @@ namespace Application.Items.Commands.CreateItem
 
         public async Task<int> Handle(CreateItemCommand request, CancellationToken cancellationToken)
         {
+            var category = _context.Categories.FindOne(x => x.Id == request.CategoryId);
             var entity = new Item
             {
                 Name = request.Name,
                 Description = request.Description,
                 Image = request.Image,
-                CategoryId = request.CategoryId,
                 Price = request.Price,
                 Amount = request.Amount,
+                Category = category,
             };
 
-            entity.AddDomainEvent(new ItemCreateEvent(entity));
-
-            _context.Items.Add(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
+            _context.InitialDate(entity);
+            _context.Items.Insert(entity);
 
             return entity.Id;
         }

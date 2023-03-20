@@ -23,8 +23,7 @@ namespace Application.Categories.Commands.UpdateCategory
 
         public async Task<Unit> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Categories
-                .FindAsync(new object[] { request.Id }, cancellationToken);
+            var entity = _context.Categories.FindOne(x => x.Id == request.Id);
 
             if (entity == null)
             {
@@ -32,8 +31,8 @@ namespace Application.Categories.Commands.UpdateCategory
             }
 
             entity.Name = request.Name;
-
-            await _context.SaveChangesAsync(cancellationToken);
+            _context.UpdateDate(entity);
+            _context.Categories.Update(entity);
 
             return Unit.Value;
         }

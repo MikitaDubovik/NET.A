@@ -1,46 +1,39 @@
 ﻿using Application.Common.Interfaces;
+using Domain.Common;
 using Domain.Entities;
-using Infrastructure.Common;
-using Infrastructure.Persistence.Interceptors;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Reflection;
+using LiteDB;
 
 namespace Infrastructure.Persistence;
-public class ApplicationDbContext : DbContext, IApplicationDbContext
+public class ApplicationDbContext : IApplicationDbContext
 {
-    private readonly IMediator _mediator;
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
+    private readonly IAuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 
-    public ApplicationDbContext(
-        DbContextOptions<ApplicationDbContext> options,
-        IMediator mediator,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
-        : base(options)
+    private readonly LiteDatabase database;
+    private readonly ILiteCollection<Category> _categories;
+    private readonly ILiteCollection<Item> _items;
+
+    private readonly string _path = Environment.CurrentDirectory + "\\DB.db";
+
+    public ApplicationDbContext(IAuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
     {
-        _mediator = mediator;
         _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+
+        database = new LiteDatabase(_path);
+
+        _categories = database.GetCollection<Category>("categories");
+        _items = database.GetCollection<Item>("items");
     }
 
-    public DbSet<Category> Categories => Set<Category>();
-    public DbSet<Item> Items => Set<Item>();
+    public ILiteCollection<Category> Categories => _categories;
+    public ILiteCollection<Item> Items => _items;
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    public void InitialDate(BaseAuditableEntity entry)
     {
-        builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-
-        base.OnModelCreating(builder);
+        _auditableEntitySaveChangesInterceptor.InitialDate(entry);
     }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    public void UpdateDate(BaseAuditableEntity entry)
     {
-        optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
-    }
-
-    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        await _mediator.DispatchDomainEvents(this);
-
-        return await base.SaveChangesAsync(cancellationToken);
+        _auditableEntitySaveChangesInterceptor.UpdateDate(entry);
     }
 }

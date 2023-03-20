@@ -1,40 +1,24 @@
-﻿using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Application.Common.Interfaces;
+using Domain.Entities;
 using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Persistence;
-public class ApplicationDbContextInitialiser
+public class ApplicationDbContextInitialiser : IApplicationDbContextInitialiser
 {
-    private readonly ILogger<ApplicationDbContextInitialiser> _logger;
-    private readonly ApplicationDbContext _context;
+    private readonly ILogger _logger;
+    private readonly IApplicationDbContext _context;
 
-    public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger, ApplicationDbContext context)
+    public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger, IApplicationDbContext context)
     {
         _logger = logger;
         _context = context;
     }
 
-    public async Task InitialiseAsync()
+    public void Seed()
     {
         try
         {
-            if (_context.Database.IsSqlServer())
-            {
-                await _context.Database.MigrateAsync();
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "An error occurred while initialising the database.");
-            throw;
-        }
-    }
-
-    public async Task SeedAsync()
-    {
-        try
-        {
-            await TrySeedAsync();
+            TrySeed();
         }
         catch (Exception ex)
         {
@@ -43,51 +27,60 @@ public class ApplicationDbContextInitialiser
         }
     }
 
-    public async Task TrySeedAsync()
+    public void TrySeed()
     {
         // Default data
         // Seed, if necessary
-        if (!_context.Categories.Any())
+        Category category = null;
+        if (_context.Categories.Count() == 0)
         {
-            _context.Categories.Add(new Category
+            var ent1 = new Category
             {
                 Name = "Name1",
                 Image = "Image1",
-            });
+            };
 
-            _context.Categories.Add(new Category
+            _context.InitialDate(ent1);
+            _context.Categories.Insert(ent1);
+            category = ent1;
+            var ent2 = new Category
             {
                 Name = "Name2",
                 Image = "Image2",
                 ParentCategoryId = 1,
-            });
+            };
 
-            await _context.SaveChangesAsync();
+            _context.InitialDate(ent2);
+            _context.Categories.Insert(ent2);
         }
 
-        if (!_context.Items.Any())
+        if (_context.Items.Count() == 0)
         {
-            _context.Items.Add(new Item
+            var ent1 = new Item
             {
                 Name = "Name1",
                 Description = "Description1",
                 Image = "Image1",
-                CategoryId = 1,
                 Price = 1,
-                Amount = 1
-            });
+                Amount = 1,
+                Category = category
+            };
 
-            _context.Items.Add(new Item
+            _context.InitialDate(ent1);
+            _context.Items.Insert(ent1);
+
+            var ent2 = new Item
             {
                 Name = "Name2",
                 Description = "Description2",
                 Image = "Image2",
-                CategoryId = 2,
                 Price = 2,
-                Amount = 2
-            });
+                Amount = 2,
+                Category = category
+            };
 
-            await _context.SaveChangesAsync();
+            _context.InitialDate(ent2);
+            _context.Items.Insert(ent2);
         }
     }
 }
