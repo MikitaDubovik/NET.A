@@ -64,5 +64,30 @@ public class ApplicationDbContextInitialiser
 
             await _context.SaveChangesAsync();
         }
+
+        if (!_context.Items.Any())
+        {
+            _context.Items.Add(new Item
+            {
+                Name = "Name1",
+                Description = "Description1",
+                Image = "Image1",
+                CategoryId = 1,
+                Price = 1,
+                Amount = 1
+            });
+
+            _context.Items.Add(new Item
+            {
+                Name = "Name2",
+                Description = "Description2",
+                Image = "Image2",
+                CategoryId = 2,
+                Price = 2,
+                Amount = 2
+            });
+
+            await _context.SaveChangesAsync();
+        }
     }
 }

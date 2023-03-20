@@ -7,7 +7,7 @@ namespace NET.A.Carting.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CartController : ApiControllerBase
+    public class CartsController : ApiControllerBase
     {
         //Add, remove, list
 

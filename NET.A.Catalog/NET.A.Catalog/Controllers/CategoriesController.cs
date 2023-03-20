@@ -8,18 +8,18 @@ namespace NET.A.Catalog.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryController : ApiControllerBase
+    public class CategoriesController : ApiControllerBase
     {
         //get/list/add/update/delete
 
         [HttpGet]
-        public async Task<ActionResult<List<CategoryDto>>> GetCarts([FromQuery] GetCategoriesQuery query)
+        public async Task<ActionResult<List<CategoryDto>>> GetCategories([FromQuery] GetCategoriesQuery query)
         {
             return await Mediator.Send(query);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryDto>> GetCart(int id)
+        public async Task<ActionResult<CategoryDto>> GetCategory(int id)
         {
             return await Mediator.Send(new GetCategoryQuery(id));
         }
