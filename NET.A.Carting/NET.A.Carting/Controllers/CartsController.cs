@@ -1,6 +1,9 @@
 ﻿using Application.Carts.Commands.CreateCart;
 using Application.Carts.Commands.DeleteCart;
 using Application.Carts.Queries;
+using Application.Items.Commands.AddItem;
+using Application.Items.Commands.RemoveItem;
+using Application.Items.Queries;
 using Microsoft.AspNetCore.Mvc;
 
 namespace NET.A.Carting.Controllers
@@ -9,24 +12,27 @@ namespace NET.A.Carting.Controllers
     [ApiController]
     public class CartsController : ApiControllerBase
     {
-        //Add, remove, list
+        //Get list of items of the cart object.
+        //Add item to cart.
+        //Remove item from the cart.
 
         [HttpGet]
-        public async Task<ActionResult<List<CartDto>>> GetCarts([FromQuery] GetCartsQuery query)
+        public async Task<ActionResult<List<ItemDto>>> GetItemsByCartId([FromQuery] GetItemsByCartIdQuery query)
         {
             return await Mediator.Send(query);
         }
 
+
         [HttpPost]
-        public async Task<ActionResult<int>> Create(CreateCartCommand command)
+        public async Task<ActionResult<int>> AddItem(AddItemCommand command)
         {
             return await Mediator.Send(command);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult> RemoveItem(int id)
         {
-            await Mediator.Send(new DeleteCartCommand(id));
+            await Mediator.Send(new RemoveItemCommand(id));
 
             return NoContent();
         }

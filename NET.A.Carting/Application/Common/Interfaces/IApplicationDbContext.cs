@@ -7,6 +7,8 @@ namespace Application.Common.Interfaces
     {
         DbSet<Cart> Carts { get; }
 
+        DbSet<Item> Items { get; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

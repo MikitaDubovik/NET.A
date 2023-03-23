@@ -51,18 +51,31 @@ public class ApplicationDbContextInitialiser
         {
             _context.Carts.Add(new Cart
             {
-                Name = "Name1",
-                Image = "Image1",
-                Price = 1,
-                Quantity = 1,
             });
 
             _context.Carts.Add(new Cart
             {
-                Name = "Name2",
+            });
+
+            await _context.SaveChangesAsync();
+        }
+
+        if (!_context.Items.Any())
+        {
+            _context.Items.Add(new Item
+            {
+                Name = "Item1",
+                Image = "Image1",
+                Price = 1,
+                CartId = 1,
+            });
+
+            _context.Items.Add(new Item
+            {
+                Name = "Item2",
                 Image = "Image2",
-                Price = 2,
-                Quantity = 2,
+                Price = 10,
+                CartId = 2,
             });
 
             await _context.SaveChangesAsync();

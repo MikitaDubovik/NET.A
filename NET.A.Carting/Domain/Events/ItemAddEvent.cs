@@ -3,13 +3,12 @@ using Domain.Entities;
 
 namespace Domain.Events
 {
-    public class CartDeletedEvent : BaseEvent
+    public class ItemAddEvent : BaseEvent
     {
-        public CartDeletedEvent(Cart item)
+        public ItemAddEvent(Item item)
         {
             Item = item;
         }
-
-        public Cart Item { get; }
+        public Item Item { get; set; }
     }
 }

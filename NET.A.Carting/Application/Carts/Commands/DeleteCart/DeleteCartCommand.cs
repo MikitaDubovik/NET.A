@@ -3,11 +3,6 @@ using Application.Common.Interfaces;
 using Domain.Entities;
 using Domain.Events;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Carts.Commands.DeleteCart
 {
@@ -34,7 +29,7 @@ namespace Application.Carts.Commands.DeleteCart
 
             _context.Carts.Remove(entity);
 
-            entity.AddDomainEvent(new CartDeletedEvent(entity));
+            entity.AddDomainEvent(new CartDeleteEvent(entity));
 
             await _context.SaveChangesAsync(cancellationToken);
 
