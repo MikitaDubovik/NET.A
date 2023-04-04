@@ -24,7 +24,7 @@ namespace Application.Items.Queries
 
         public async Task<List<ItemDto>> Handle(GetItemsByCartIdQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Items.Where(i=>i.CartId == request.CartId)
+            return await _context.Items.Where(i => i.CartId == request.CartId)
                 .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken: cancellationToken);
         }

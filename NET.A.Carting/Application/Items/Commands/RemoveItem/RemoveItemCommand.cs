@@ -6,7 +6,7 @@ using MediatR;
 
 namespace Application.Items.Commands.RemoveItem
 {
-    public record RemoveItemCommand(int Id) : IRequest;
+    public record RemoveItemCommand(int CartId, int ItemId) : IRequest;
 
     public class RemoveItemCommandHandler : IRequestHandler<RemoveItemCommand>
     {
@@ -19,12 +19,17 @@ namespace Application.Items.Commands.RemoveItem
 
         public async Task<Unit> Handle(RemoveItemCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Items
-                .FindAsync(new object[] { request.Id }, cancellationToken);
+            var cart = _context.Carts.FirstOrDefault(c => c.Id == request.CartId);
+            if (cart == null)
+            {
+                throw new ArgumentException(nameof(request.CartId), "The provided Cart ID does not exist.");
+            }
+
+            var entity = _context.Items.FirstOrDefault(i => i.Id == request.ItemId && i.CartId == request.CartId);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Item), request.Id);
+                throw new NotFoundException(nameof(Item), request.ItemId);
             }
 
             _context.Items.Remove(entity);
