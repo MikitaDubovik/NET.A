@@ -1,4 +1,5 @@
-﻿using Application.Items.Commands.CreateItem;
+﻿using Application.Common.Models;
+using Application.Items.Commands.CreateItem;
 using Application.Items.Commands.DeleteItem;
 using Application.Items.Commands.UpdateItem;
 using Application.Items.Queries;
@@ -13,7 +14,7 @@ namespace NET.A.Catalog.Controllers
         //get/list/add/update/delete
 
         [HttpGet]
-        public async Task<ActionResult<List<ItemDto>>> GetItems([FromQuery] GetItemsQuery query)
+        public async Task<ActionResult<PaginatedList<ItemDto>>> GetItems([FromQuery] GetItemsQuery query)
         {
             return await Mediator.Send(query);
         }
