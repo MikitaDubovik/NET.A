@@ -41,7 +41,7 @@ namespace NET.A.Carting.Controllers.v1
         {
             await Mediator.Send(new RemoveItemCommand(cartId, itemId));
 
-            return NoContent();
+            return Ok();
         }
     }
 }
