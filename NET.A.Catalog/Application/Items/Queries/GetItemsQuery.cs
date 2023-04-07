@@ -1,12 +1,20 @@
 ﻿using Application.Common.Interfaces;
+using Application.Common.Mappings;
+using Application.Common.Models;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using MediatR;
 
 namespace Application.Items.Queries
 {
-    public record GetItemsQuery : IRequest<List<ItemDto>>;
+    public record GetItemsQuery : IRequest<PaginatedList<ItemDto>>
+    {
+        public int CategoryId { get; set; }
+        public int PageNumber { get; init; } = 1;
+        public int PageSize { get; init; } = 10;
+    }
 
-    public class GetItemsQueryHandler : IRequestHandler<GetItemsQuery, List<ItemDto>>
+    public class GetItemsQueryHandler : IRequestHandler<GetItemsQuery, PaginatedList<ItemDto>>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
@@ -17,10 +25,12 @@ namespace Application.Items.Queries
             _mapper = mapper;
         }
 
-        public Task<List<ItemDto>> Handle(GetItemsQuery request, CancellationToken cancellationToken)
+        public async Task<PaginatedList<ItemDto>> Handle(GetItemsQuery request, CancellationToken cancellationToken)
         {
-            var items = _context.Items.Query().ToList();
-            return Task.Run(() => _mapper.Map<List<ItemDto>>(items));
+            return _context.Items.Find(x => x.CategoryId == request.CategoryId)
+                                 .AsQueryable()
+                                 .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
+                                 .PaginatedList(request.PageNumber, request.PageSize);
         }
     }
 }

@@ -27,6 +27,12 @@ namespace Application.Categories.Commands.DeleteCategory
 
             _context.Categories.Delete(entity.Id);
 
+            var items = _context.Items.Find(i => i.CategoryId == request.Id);
+            foreach (var item in items)
+            {
+                _context.Items.Delete(item.Id);
+            }
+
             return Unit.Value;
         }
     }

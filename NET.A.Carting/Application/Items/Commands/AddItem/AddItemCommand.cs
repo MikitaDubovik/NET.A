@@ -27,6 +27,12 @@ namespace Application.Items.Commands.AddItem
 
         public async Task<int> Handle(AddItemCommand command, CancellationToken cancellationToken)
         {
+            var cart = _context.Carts.FirstOrDefault(c => c.Id == command.CartId);
+            if (cart == null)
+            {
+                _context.Carts.Add(new Cart { Id = command.CartId });
+            }
+
             var entity = new Item
             {
                 Name = command.Name,
