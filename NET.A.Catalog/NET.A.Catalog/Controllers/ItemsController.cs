@@ -1,9 +1,9 @@
-﻿using Application.Common.Models;
+﻿using Application.Common.Interfaces;
+using Application.Common.Models;
 using Application.Items.Commands.CreateItem;
 using Application.Items.Commands.DeleteItem;
 using Application.Items.Commands.UpdateItem;
 using Application.Items.Queries;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Formatting;
@@ -15,6 +15,13 @@ namespace NET.A.Catalog.Controllers
     public class ItemsController : ApiControllerBase
     {
         //get/list/add/update/delete
+
+        private readonly IMessageProducer _messageProducer;
+
+        public ItemsController(IMessageProducer messageProducer)
+        {
+            _messageProducer = messageProducer;
+        }
 
         [HttpGet]
         public async Task<ActionResult<HttpResponseMessage>> GetItems([FromQuery] GetItemsQuery query)
@@ -51,11 +58,11 @@ namespace NET.A.Catalog.Controllers
         }
 
         [HttpPut]
-        [Route("item/{id}", Name = "update-item")]
+        [Route("item", Name = "update-item")]
         public async Task<ActionResult> Update(UpdateItemCommand command)
         {
             await Mediator.Send(command);
-
+            _messageProducer.SendMessage(command);
             return NoContent();
         }
 

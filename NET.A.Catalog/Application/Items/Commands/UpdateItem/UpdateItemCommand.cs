@@ -10,6 +10,10 @@ namespace Application.Items.Commands.UpdateItem
         public int Id { get; init; }
 
         public string Name { get; init; }
+
+        public string? Image { get; set; }
+
+        public double Price { get; set; }
     }
 
     public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand>
