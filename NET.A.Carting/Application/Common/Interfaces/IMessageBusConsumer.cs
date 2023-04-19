@@ -1,6 +1,6 @@
 ﻿namespace Application.Common.Interfaces
 {
-    public interface IMessageBusConsumer
+    public interface IMessageBusConsumer : IDisposable
     {
         Task ReceiveMessage<T>(string queueName);
 
