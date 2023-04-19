@@ -19,10 +19,12 @@ namespace Application.Items.Commands.UpdateItem
     public class UpdateItemCommandHandler : IRequestHandler<UpdateItemCommand>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMessageProducer _messageProducer;
 
-        public UpdateItemCommandHandler(IApplicationDbContext context)
+        public UpdateItemCommandHandler(IApplicationDbContext context, IMessageProducer messageProducer)
         {
             _context = context;
+            _messageProducer = messageProducer;
         }
 
         public async Task<Unit> Handle(UpdateItemCommand request, CancellationToken cancellationToken)
@@ -37,6 +39,8 @@ namespace Application.Items.Commands.UpdateItem
             entity.Name = request.Name;
             _context.UpdateDate(entity);
             _context.Items.Update(entity);
+
+            _messageProducer.SendMessage(request);
 
             return Unit.Value;
         }
