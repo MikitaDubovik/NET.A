@@ -1,7 +1,6 @@
 ﻿using Application.Common.Interfaces;
 using Application.Items.Commands.UpdateItem;
 using RabbitMQ.Client;
-using RabbitMQ.Client.Events;
 using System.Text;
 using System.Text.Json;
 
