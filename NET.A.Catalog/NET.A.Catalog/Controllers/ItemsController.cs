@@ -3,7 +3,6 @@ using Application.Items.Commands.CreateItem;
 using Application.Items.Commands.DeleteItem;
 using Application.Items.Commands.UpdateItem;
 using Application.Items.Queries;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Net.Http.Formatting;
@@ -51,11 +50,10 @@ namespace NET.A.Catalog.Controllers
         }
 
         [HttpPut]
-        [Route("item/{id}", Name = "update-item")]
+        [Route("item", Name = "update-item")]
         public async Task<ActionResult> Update(UpdateItemCommand command)
         {
             await Mediator.Send(command);
-
             return NoContent();
         }
 
