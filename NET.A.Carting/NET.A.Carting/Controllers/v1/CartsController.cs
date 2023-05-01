@@ -2,11 +2,15 @@
 using Application.Items.Commands.AddItem;
 using Application.Items.Commands.RemoveItem;
 using Application.Items.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Web.Resource;
 
 namespace NET.A.Carting.Controllers.v1
 {
     [ApiController]
+    [Authorize(Roles = "Manager")]
+    [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
     public class CartsController : ApiControllerBase

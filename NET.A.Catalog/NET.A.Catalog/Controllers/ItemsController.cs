@@ -3,7 +3,9 @@ using Application.Items.Commands.CreateItem;
 using Application.Items.Commands.DeleteItem;
 using Application.Items.Commands.UpdateItem;
 using Application.Items.Queries;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Net;
 using System.Net.Http.Formatting;
 
@@ -15,6 +17,7 @@ namespace NET.A.Catalog.Controllers
     {
         //get/list/add/update/delete
 
+        [Authorize(Roles = "Manager, Buyer")]
         [HttpGet]
         public async Task<ActionResult<HttpResponseMessage>> GetItems([FromQuery] GetItemsQuery query)
         {
@@ -34,6 +37,7 @@ namespace NET.A.Catalog.Controllers
             return CreateResponse(items, itemLinks);
         }
 
+        [Authorize(Roles = "Manager, Buyer")]
         [HttpGet]
         [Route("item/{id}", Name = "item")]
         public async Task<HttpResponseMessage> GetItem(int id)
@@ -43,12 +47,14 @@ namespace NET.A.Catalog.Controllers
             return CreateResponse(item, itemLinks);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPost]
         public async Task<ActionResult<int>> Create(CreateItemCommand command)
         {
             return await Mediator.Send(command);
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpPut]
         [Route("item", Name = "update-item")]
         public async Task<ActionResult> Update(UpdateItemCommand command)
@@ -57,6 +63,7 @@ namespace NET.A.Catalog.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Manager")]
         [HttpDelete]
         [Route("item/{id}", Name = "delete-item")]
         public async Task<ActionResult> Delete(int id)

@@ -1,15 +1,24 @@
 using Application;
 using Infrastructure.Persistence;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.Identity.Web;
 using NET.A.Carting.Configurations;
+using NET.A.Carting.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddApplicationServices();
 builder.Services.AddInfrastructureServices(builder.Configuration);
+builder.Services.AddMiddlewares();
 builder.Services.AddMessageBusConsumers();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 
@@ -61,10 +70,15 @@ if (app.Environment.IsDevelopment())
     }
 }
 
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<IdentityTokenLoggerMiddleware>();
 
 app.Run();
