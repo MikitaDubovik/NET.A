@@ -9,7 +9,7 @@ using Microsoft.Identity.Web.Resource;
 namespace NET.A.Carting.Controllers.v1
 {
     [ApiController]
-    [Authorize(Roles = "Manager")]
+    [Authorize]
     [RequiredScope(RequiredScopesConfigurationKey = "AzureAd:Scopes")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
