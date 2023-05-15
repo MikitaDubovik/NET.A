@@ -10,12 +10,13 @@ namespace APIGateway.Aggregators
     {
         public async Task<DownstreamResponse> Aggregate(List<HttpContext> responses)
         {
-            var one = await responses[0].Items.DownstreamResponse().Content.ReadAsStringAsync();
-            var two = await responses[1].Items.DownstreamResponse().Content.ReadAsStringAsync();
-
             var contentBuilder = new StringBuilder();
-            contentBuilder.Append(one);
-            contentBuilder.Append(two);
+
+            foreach (var response in responses)
+            {
+                var content = await response.Items.DownstreamResponse().Content.ReadAsStringAsync();
+                contentBuilder.Append(content);
+            }
 
             var stringContent = new StringContent(contentBuilder.ToString())
             {
