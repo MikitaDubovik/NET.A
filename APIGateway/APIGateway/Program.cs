@@ -1,4 +1,6 @@
 using APIGateway.Aggregators;
+using APIGateway.Configurations;
+using Ocelot.Cache.CacheManager;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
@@ -10,12 +12,13 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Configuration.AddJsonFile("configuration.json", optional: false, reloadOnChange: true);
 builder.Services.AddOcelot(builder.Configuration)
-    .AddSingletonDefinedAggregator<ItemAggregator>();
-//.AddCacheManager(x =>
-// {
-//     x.WithDictionaryHandle();
-// });
+    .AddSingletonDefinedAggregator<ItemAggregator>()
+    .AddCacheManager(x =>
+     {
+         x.WithDictionaryHandle();
+     });
 
+builder.Services.AddJwtAuthentication();
 
 var app = builder.Build();
 
@@ -28,4 +31,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseOcelot();
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();

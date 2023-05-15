@@ -39,6 +39,10 @@
 			],
 			"UpstreamPathTemplate": "/api/catalog/items/item/{everything}",
 			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"AuthenticationOptions": {
+				"AuthenticationProviderKey": "Bearer",
+				"AllowedScopes": []
+			},
 			"Key": "ItemDesc"
 		},
 		{
@@ -52,6 +56,10 @@
 			],
 			"UpstreamPathTemplate": "/api/catalog/items/item-properties/{everything}",
 			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"AuthenticationOptions": {
+				"AuthenticationProviderKey": "Bearer",
+				"AllowedScopes": []
+			},
 			"Key": "ItemProp"
 		}
 	],
