@@ -1,24 +1,70 @@
 ﻿{
-	"ReRoutes": [
+	"Routes": [
 		{
-			"DownstreamPathTemplate": "/api/{version}/{everything}",
-			"DownstreamScheme": "http",
-			"DownstreamHost": "localhost",
-			"DownstreamPort": 9001,
-			"UpstreamPathTemplate": "/api/{version}/carting/{everything}",
-			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+			"DownstreamPathTemplate": "/todos/{id}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "jsonplaceholder.typicode.com",
+					"Port": 443
+				}
+			],
+			"UpstreamPathTemplate": "/todos/{id}",
+			"UpstreamHttpMethod": [ "Get" ]
 		},
 		{
 			"DownstreamPathTemplate": "/api/{version}/{everything}",
-			"DownstreamScheme": "http",
-			"DownstreamHost": "localhost",
-			"DownstreamPort": 9002,
-			"UpstreamPathTemplate": "/api/{version}/catalog/{everything}",
-			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ]
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 7130
+				}
+			],
+			"UpstreamPathTemplate": "/api/{version}/carting/{everything}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"FileCacheOptions": {
+				"TtlSeconds": 60
+			}
+		},
+
+		{
+			"DownstreamPathTemplate": "/api/items/item/{everything}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 7145
+				}
+			],
+			"UpstreamPathTemplate": "/api/catalog/items/item/{everything}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"Key": "ItemDesc"
+		},
+		{
+			"DownstreamPathTemplate": "/api/items/item-properties/{everything}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 7145
+				}
+			],
+			"UpstreamPathTemplate": "/api/catalog/items/item-properties/{everything}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"Key": "ItemProp"
 		}
 	],
 	"GlobalConfiguration": {
-		"RequestIdKey": "OcRequestId",
-		"AdministrationPath": "/administration"
-	}
-}  
+		"BaseUrl": "https://localhost:7101"
+	},
+	"Aggregates": [
+		{
+			"RouteKeys": [
+				"ItemDesc",
+				"ItemProp"
+			],
+			"UpstreamPathTemplate": "/api/catalog/aggregate/{everything}"
+		}
+	]
+}
