@@ -27,7 +27,6 @@
 				"TtlSeconds": 60
 			}
 		},
-
 		{
 			"DownstreamPathTemplate": "/api/items/item/{everything}",
 			"DownstreamScheme": "https",
@@ -42,6 +41,9 @@
 			"AuthenticationOptions": {
 				"AuthenticationProviderKey": "Bearer",
 				"AllowedScopes": []
+			},
+			"FileCacheOptions": {
+				"TtlSeconds": 60
 			},
 			"Key": "ItemDesc"
 		},
@@ -59,6 +61,9 @@
 			"AuthenticationOptions": {
 				"AuthenticationProviderKey": "Bearer",
 				"AllowedScopes": []
+			},
+			"FileCacheOptions": {
+				"TtlSeconds": 60
 			},
 			"Key": "ItemProp"
 		}
