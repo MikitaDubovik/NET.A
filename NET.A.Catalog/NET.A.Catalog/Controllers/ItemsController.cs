@@ -6,8 +6,6 @@ using Application.Items.Queries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
-using System.Net;
-using System.Net.Http.Formatting;
 
 namespace NET.A.Catalog.Controllers
 {
@@ -19,32 +17,34 @@ namespace NET.A.Catalog.Controllers
 
         [Authorize(Roles = "Manager, Buyer")]
         [HttpGet]
-        public async Task<ActionResult<HttpResponseMessage>> GetItems([FromQuery] GetItemsQuery query)
+        public async Task<ActionResult<PaginatedList<ItemDto>>> GetItems([FromQuery] GetItemsQuery query)
         {
             var items = await Mediator.Send(query);
 
-            var itemLinks = new List<Link>();
             foreach (var item in items.Items)
             {
-                itemLinks.Add(new Link()
-                {
-                    Href = Url.Link("item", new { id = item.Id }),
-                    Rel = "self",
-                    Method = HttpMethod.Get.ToString()
-                });
+                item.Links = CreateLinksForItem(item.Id);
             }
 
-            return CreateResponse(items, itemLinks);
+            return items;
         }
 
         [Authorize(Roles = "Manager, Buyer")]
         [HttpGet]
         [Route("item/{id}", Name = "item")]
-        public async Task<HttpResponseMessage> GetItem(int id)
+        public async Task<ActionResult<ItemDto>> GetItem(int id)
         {
             var item = await Mediator.Send(new GetItemQuery(id));
-            var itemLinks = CreateLinksForItem(id);
-            return CreateResponse(item, itemLinks);
+            item.Links = CreateLinksForItem(id);
+            return item;
+        }
+
+        [Authorize(Roles = "Manager, Buyer")]
+        [HttpGet]
+        [Route("item-properties/{id}", Name = "item-properties")]
+        public async Task<ActionResult<ItemPropertiesDto>> GetItemProperties(int id)
+        {
+            return await Mediator.Send(new GetItemPropertiesQuery(id));
         }
 
         [Authorize(Roles = "Manager")]
@@ -73,26 +73,7 @@ namespace NET.A.Catalog.Controllers
             return NoContent();
         }
 
-
-        private HttpResponseMessage CreateResponse<T>(T body, List<Link> links)
-        {
-            // Create a response with the customer data and hypermedia links
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
-            {
-                Content = new ObjectContent<T>(body, new JsonMediaTypeFormatter())
-            };
-            // Convert the list of Link objects to a list of strings
-            var linkHeaderValues = links.Select(l => $"<{l.Href}>; rel=\"{l.Rel}\"; method=\"{l.Method}\"");
-
-            // Add the link header values to the response headers
-            foreach (var value in linkHeaderValues)
-            {
-                response.Headers.Add("Link", value);
-            }
-            return response;
-        }
-
-        private List<Link> CreateLinksForItem(int id)
+        private IEnumerable<string> CreateLinksForItem(int id)
         {
             var links = new List<Link>
             {
@@ -118,7 +99,7 @@ namespace NET.A.Catalog.Controllers
                 }
             };
 
-            return links;
+            return links.Select(l => $"<{l.Href}>; rel=\"{l.Rel}\"; method=\"{l.Method}\"");
         }
     }
 }

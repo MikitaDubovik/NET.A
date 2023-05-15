@@ -11,5 +11,6 @@ namespace Domain.Entities
         public Category Category { get; set; }
         public double Price { get; set; }
         public int Amount { get; set; }
+        public Dictionary<string, string> Properties { get; set; }
     }
 }
