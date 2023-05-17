@@ -33,7 +33,7 @@
 			"SwaggerKey": "catalog"
 		},
 		{
-			"DownstreamPathTemplate": "/api/items/item/{everything}",
+			"DownstreamPathTemplate": "/api/items/item/{id}",
 			"DownstreamScheme": "https",
 			"DownstreamHostAndPorts": [
 				{
@@ -41,8 +41,8 @@
 					"Port": 7145
 				}
 			],
-			"UpstreamPathTemplate": "/api/catalog/items/item/{everything}",
-			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"UpstreamPathTemplate": "/api/catalog/items/item/{id}",
+			"UpstreamHttpMethod": [ "GET" ],
 			"AuthenticationOptions": {
 				"AuthenticationProviderKey": "Bearer",
 				"AllowedScopes": []
@@ -54,7 +54,7 @@
 			"SwaggerKey": "ItemDesc"
 		},
 		{
-			"DownstreamPathTemplate": "/api/items/item-properties/{everything}",
+			"DownstreamPathTemplate": "/api/items/item-properties/{id}",
 			"DownstreamScheme": "https",
 			"DownstreamHostAndPorts": [
 				{
@@ -62,8 +62,8 @@
 					"Port": 7145
 				}
 			],
-			"UpstreamPathTemplate": "/api/catalog/items/item-properties/{everything}",
-			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"UpstreamPathTemplate": "/api/catalog/items/item-properties/{id}",
+			"UpstreamHttpMethod": [ "GET" ],
 			"AuthenticationOptions": {
 				"AuthenticationProviderKey": "Bearer",
 				"AllowedScopes": []
@@ -84,7 +84,7 @@
 				"ItemDesc",
 				"ItemProp"
 			],
-			"UpstreamPathTemplate": "/api/catalog/aggregate/{everything}"
+			"UpstreamPathTemplate": "/api/aggregate/catalog/{id}"
 		}
 	],
 	"SwaggerEndPoints": [
@@ -103,6 +103,26 @@
 			"Config": [
 				{
 					"Name": "Catalog API",
+					"Version": "v1",
+					"Url": "https://localhost:7145/swagger/v1/swagger.json"
+				}
+			]
+		},
+		{
+			"Key": "ItemDesc",
+			"Config": [
+				{
+					"Name": "ItemDesc API",
+					"Version": "v1",
+					"Url": "https://localhost:7145/swagger/v1/swagger.json"
+				}
+			]
+		},
+		{
+			"Key": "ItemProp",
+			"Config": [
+				{
+					"Name": "ItemProp API",
 					"Version": "v1",
 					"Url": "https://localhost:7145/swagger/v1/swagger.json"
 				}

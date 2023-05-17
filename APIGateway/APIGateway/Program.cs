@@ -8,8 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Configuration.AddJsonFile("configuration.json", optional: false, reloadOnChange: true);
 
-builder.Services.AddJwtAuthentication();
-
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -27,6 +25,8 @@ builder.Services.AddOcelot(builder.Configuration)
     {
         x.WithDictionaryHandle();
     });
+
+builder.Services.AddJwtAuthentication();
 
 var app = builder.Build();
 
