@@ -63,7 +63,8 @@ public class ApplicationDbContextInitialiser : IApplicationDbContextInitialiser
                 Image = "Image1",
                 Price = 1,
                 Amount = 1,
-                Category = category
+                Category = category,
+                Properties = new Dictionary<string, string> { { "Samsung", "S23" } }
             };
 
             _context.InitialDate(ent1);
@@ -76,7 +77,8 @@ public class ApplicationDbContextInitialiser : IApplicationDbContextInitialiser
                 Image = "Image2",
                 Price = 2,
                 Amount = 2,
-                Category = category
+                Category = category,
+                Properties = new Dictionary<string, string> { { "Apple", "I14" } }
             };
 
             _context.InitialDate(ent2);
