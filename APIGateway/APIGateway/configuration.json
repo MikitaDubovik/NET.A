@@ -1,0 +1,132 @@
+﻿{
+	"Routes": [
+		{
+			"DownstreamPathTemplate": "/api/{version}/{everything}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 7130
+				}
+			],
+			"UpstreamPathTemplate": "/api/{version}/carting/{everything}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"FileCacheOptions": {
+				"TtlSeconds": 60
+			},
+			"SwaggerKey": "carting"
+		},
+		{
+			"DownstreamPathTemplate": "/api/{everything}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 7145
+				}
+			],
+			"UpstreamPathTemplate": "/api/catalog/{everything}",
+			"UpstreamHttpMethod": [ "POST", "PUT", "GET" ],
+			"FileCacheOptions": {
+				"TtlSeconds": 60
+			},
+			"SwaggerKey": "catalog"
+		},
+		{
+			"DownstreamPathTemplate": "/api/items/item/{id}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 7145
+				}
+			],
+			"UpstreamPathTemplate": "/api/catalog/items/item/{id}",
+			"UpstreamHttpMethod": [ "GET" ],
+			"AuthenticationOptions": {
+				"AuthenticationProviderKey": "Bearer",
+				"AllowedScopes": []
+			},
+			"FileCacheOptions": {
+				"TtlSeconds": 60
+			},
+			"Key": "ItemDesc",
+			"SwaggerKey": "ItemDesc"
+		},
+		{
+			"DownstreamPathTemplate": "/api/items/item-properties/{id}",
+			"DownstreamScheme": "https",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 7145
+				}
+			],
+			"UpstreamPathTemplate": "/api/catalog/items/item-properties/{id}",
+			"UpstreamHttpMethod": [ "GET" ],
+			"AuthenticationOptions": {
+				"AuthenticationProviderKey": "Bearer",
+				"AllowedScopes": []
+			},
+			"FileCacheOptions": {
+				"TtlSeconds": 60
+			},
+			"Key": "ItemProp",
+			"SwaggerKey": "ItemProp"
+		}
+	],
+	"GlobalConfiguration": {
+		"BaseUrl": "https://localhost:7101"
+	},
+	"Aggregates": [
+		{
+			"RouteKeys": [
+				"ItemDesc",
+				"ItemProp"
+			],
+			"UpstreamPathTemplate": "/api/aggregate/catalog/{id}"
+		}
+	],
+	"SwaggerEndPoints": [
+		{
+			"Key": "carting",
+			"Config": [
+				{
+					"Name": "Carting API",
+					"Version": "v1",
+					"Url": "https://localhost:7130/swagger/v1/swagger.json"
+				}
+			]
+		},
+		{
+			"Key": "catalog",
+			"Config": [
+				{
+					"Name": "Catalog API",
+					"Version": "v1",
+					"Url": "https://localhost:7145/swagger/v1/swagger.json"
+				}
+			]
+		},
+		{
+			"Key": "ItemDesc",
+			"Config": [
+				{
+					"Name": "ItemDesc API",
+					"Version": "v1",
+					"Url": "https://localhost:7145/swagger/v1/swagger.json"
+				}
+			]
+		},
+		{
+			"Key": "ItemProp",
+			"Config": [
+				{
+					"Name": "ItemProp API",
+					"Version": "v1",
+					"Url": "https://localhost:7145/swagger/v1/swagger.json"
+				}
+			]
+		}
+	]
+}

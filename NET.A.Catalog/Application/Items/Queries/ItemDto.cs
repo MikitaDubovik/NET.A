@@ -11,5 +11,6 @@ namespace Application.Items.Queries
         public string Image { get; set; }
         public double Price { get; set; }
         public int Amount { get; set; }
+        public IEnumerable<string>? Links { get; set; }
     }
 }
