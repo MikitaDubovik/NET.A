@@ -27,6 +27,7 @@ builder.Services.AddOcelot(builder.Configuration)
     });
 
 builder.Services.AddJwtAuthentication();
+builder.Services.AddApplicationInsightsTelemetry(builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"]);
 
 var app = builder.Build();
 

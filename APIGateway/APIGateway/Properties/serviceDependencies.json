@@ -1,9 +1,5 @@
 {
   "dependencies": {
-    "identityapp1": {
-      "type": "identityapp",
-      "dynamicId": null
-    },
     "secrets1": {
       "type": "secrets"
     },
